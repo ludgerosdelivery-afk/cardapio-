@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ludgero's Delivery</title>
+
+<style>
+body { font-family: Arial; margin:0; background:#111; color:#fff; }
+header { background:#e63946; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
+.container { padding:15px; }
+h2 { color:#ffd166; }
+.item { background:#1d1d1d; margin-bottom:10px; padding:10px; border-radius:10px; }
+.price { color:#ffd166; font-weight:bold; }
+button { background:#e63946; border:none; padding:8px; color:white; border-radius:5px; cursor:pointer; }
+#cart { position:fixed; bottom:0; width:100%; background:#000; padding:10px; }
+</style>
+</head>
+
+<body>
+
+<header>🍕 Ludgero's Delivery</header>
+
+<div class="container" id="menu"></div>
+
+<div id="cart">
+<strong>Pedido:</strong> <span id="cart-items"></span><br>
+<strong>Total: R$ <span id="total">0</span></strong><br>
+<button onclick="sendWhatsApp()">Finalizar no WhatsApp</button>
+</div>
+
+<script>
+const menu = [
+{category:"PIZZAS TRADICIONAIS", name:"Calabresa", price:35},
+{category:"PIZZAS TRADICIONAIS", name:"Mussarela", price:32},
+{category:"PIZZAS TRADICIONAIS", name:"Portuguesa", price:40},
+{category:"PIZZAS TRADICIONAIS", name:"Frango com Catupiry", price:42},
+
+{category:"PIZZAS ESPECIAIS", name:"Frango com Cheddar", price:45},
+{category:"PIZZAS ESPECIAIS", name:"Bacon com Cheddar", price:46},
+{category:"PIZZAS ESPECIAIS", name:"Carne Seca com Catupiry", price:48},
+
+{category:"PIZZAS DOCES", name:"Chocolate", price:35},
+{category:"PIZZAS DOCES", name:"Chocolate com Morango", price:40},
+
+{category:"HAMBÚRGUERES", name:"X-Burguer", price:12},
+{category:"HAMBÚRGUERES", name:"X-Salada", price:14},
+{category:"HAMBÚRGUERES", name:"X-Tudo", price:20},
+
+{category:"BEBIDAS", name:"Refrigerante Lata", price:6},
+{category:"BEBIDAS", name:"Refrigerante 2L", price:12}
+];
+
+let cart = [];
+
+function renderMenu() {
+const container = document.getElementById("menu");
+let currentCategory = "";
+
+menu.forEach((item, index) => {
+if(item.category !== currentCategory){
+currentCategory = item.category;
+container.innerHTML += `<h2>${currentCategory}</h2>`;
+}
+
+container.innerHTML += `
+<div class="item">
+<strong>${item.name}</strong><br>
+<span class="price">R$ ${item.price}</span><br>
+<button onclick="addToCart(${index})">Adicionar</button>
+</div>
+`;
+});
+}
+
+function addToCart(index) {
+cart.push(menu[index]);
+updateCart();
+}
+
+function updateCart() {
+let total = 0;
+let items = cart.map(i => i.name).join(", ");
+cart.forEach(i => total += i.price);
+
+document.getElementById("cart-items").innerText = items;
+document.getElementById("total").innerText = total;
+}
+
+function sendWhatsApp() {
+let message = "Pedido:%0A";
+cart.forEach(i => message += "- " + i.name + "%0A");
+message += "%0ATotal: R$ " + document.getElementById("total").innerText;
+
+window.open(`https://wa.me/5521998912264?text=${message}`);
+}
+
+renderMenu();
+</script>
+
+</body>
+</html>
